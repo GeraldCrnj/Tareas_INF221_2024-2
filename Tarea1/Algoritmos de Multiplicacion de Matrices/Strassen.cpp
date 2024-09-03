@@ -1,6 +1,9 @@
-#include<iostream>
-#include<vector>
+#include <iostream>
+#include <vector>
 #include <chrono>
+#include <fstream>  // Necesario para std::ifstream
+#include <sstream>  // Necesario para std::istringstream
+
 using namespace std;
 
 typedef vector<vector<int>> matrix;
@@ -73,34 +76,86 @@ matrix strassen(const matrix &A, const matrix &B, int size) {
     return C;
 }
 
+matrix leer_matriz(ifstream& archivo, int& filas, int& columnas) {
+    archivo >> filas >> columnas;
+    matrix matriz(filas, vector<int>(columnas, 0));
+    for (int i = 0; i < filas; ++i) {
+        for (int j = 0; j < columnas; ++j) {
+            archivo >> matriz[i][j];
+        }
+    }
+    return matriz;
+}
+
 int main() {
-    int size;
-    cout << "Ingrese el tamaño de la matriz (debe ser una potencia de 2): ";
-    cin >> size;
+    ifstream archivo("dataset.txt");
+    if (!archivo) {
+        cerr << "Error al abrir el archivo" << endl;
+        return 1;
+    }
 
-    matrix A(size, vector<int>(size, 0));
-    matrix B(size, vector<int>(size, 0));
+    int rowsA, colsA, rowsB, colsB;
+    matrix A, B;
 
-    cout << "Ingrese los elementos de la matriz A:" << endl;
-    for (int i = 0; i < size; i++)
-        for (int j = 0; j < size; j++)
-            cin >> A[i][j];
+    // Leer matrices
+    A = leer_matriz(archivo, rowsA, colsA);
+    B = leer_matriz(archivo, rowsB, colsB);
 
-    cout << "Ingrese los elementos de la matriz B:" << endl;
-    for (int i = 0; i < size; i++)
-        for (int j = 0; j < size; j++)
-            cin >> B[i][j];
+    // Imprimir la matriz A
+    cout << "Matriz A: " << endl;
+    for (const auto& row : A) {
+        for (int val : row) {
+            cout << val << " ";
+        }
+        cout << std::endl;
+    }
+    // Imprimir la matriz B
+    cout << "Matriz B: " << endl;
+    for (const auto& row : B) {
+        for (int val : row) {
+            cout << val << " ";
+        }
+        cout << std::endl;
+    }
+
+    archivo.close();
+
+    // Verificar que las dimensiones sean compatibles para la multiplicación
+    if (colsA != rowsB) {
+        cerr << "Las dimensiones de las matrices no son compatibles para la multiplicación." << endl;
+        return 1;
+    }
+
+    // Imprimir la matriz A
+    cout << "Matriz A: " << endl;
+    for (const auto& row : A) {
+        for (int val : row) {
+            cout << val << " ";
+        }
+        cout << endl;
+    }
+
+    // Imprimir la matriz B
+    cout << "Matriz B: " << endl;
+    for (const auto& row : B) {
+        for (int val : row) {
+            cout << val << " ";
+        }
+        cout << endl;
+    }
 
     auto start = std::chrono::high_resolution_clock::now();
-    matrix C = strassen(A, B, size);
+    matrix C = strassen(A, B, rowsA);  // Tamaño de la matriz es rowsA ya que rowsA == colsB
     auto end = std::chrono::high_resolution_clock::now();
     chrono::duration<double> elapsed = end - start;
-    cout << "Tiempo de ejecución: " << elapsed.count() << " segundos" << std::endl;
+    cout << "Tiempo de ejecución: " << elapsed.count() << " segundos" << endl;
 
     cout << "Resultado de la multiplicación:" << endl;
-    for (int i = 0; i < size; i++) {
-        for (int j = 0; j < size; j++)
-            cout << C[i][j] << " ";
+    // Imprimir la matriz resultante C
+    for (const auto& row : C) {
+        for (int val : row) {
+            cout << val << " ";
+        }
         cout << endl;
     }
 
@@ -109,7 +164,7 @@ int main() {
 
 /*
 REFERENCIAS:
-Este código está basado en recursos educativos y ejemplos del algoritmo de Strassen disponibles en línea. Se ocuparon los siguientes enlaces:
+Este código está basado en recursos educativos y ejemplos del algoritmo de Strassen disponibles en línea. Se ocuparon los siguientes enlalos siguientes enlaces:
 
     Referencia detallada del código y explicación del algoritmo: https://www.geeksforgeeks.org/strassens-matrix-multiplication/
     Explicación matemática del algoritmo: https://en.wikipedia.org/wiki/Strassen_algorithm
