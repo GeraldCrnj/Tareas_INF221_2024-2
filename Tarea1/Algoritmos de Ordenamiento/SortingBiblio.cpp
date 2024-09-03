@@ -2,11 +2,25 @@
 #include <algorithm>
 #include <vector>
 #include <chrono>
+#include <fstream>
 
 using namespace std;
 
+vector<int> readDataset(const string& filename) {
+    vector<int> vec;
+    ifstream file(filename);
+    int num;
+    while (file >> num) {
+        vec.push_back(num);
+    }
+    file.close();
+    return vec;
+}
+
 int main() {
-  vector<int> vec = {38, 27, 43, 3, 9, 82, 10};
+  string filename = "dataset.txt";
+  vector<int> vec = readDataset(filename);
+  
   cout << "Vector original: ";
   for (int num : vec) {
       cout << num << " ";

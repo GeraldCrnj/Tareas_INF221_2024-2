@@ -39,12 +39,11 @@ Matrix multiplicar_matrices_op(const Matrix& A, const Matrix& B) {
 
 int main() {
     // Ejemplo de matrices A y B
-    Matrix A = {{1, 2, 3}, 
-                {4, 5, 6}};
+    Matrix A = {{1, 2}, 
+                {4, 5}};
                 
     Matrix B = {{7, 8},
-                {9, 10},
-                {11, 12}};
+                {9, 10},};
 
     // Imprimir la matriz A
     cout << "Matriz A: " << endl;

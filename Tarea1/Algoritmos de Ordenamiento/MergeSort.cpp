@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <vector>
 #include <chrono>
+#include <fstream>
 
 using namespace std;
 
@@ -14,12 +15,25 @@ vector<int> mergeSort(vector<int> v){
   v1 = mergeSort(v1);
   v2 = mergeSort(v2);
   vector<int> resultado(v1.size() + v2.size());
-  merge(v1.begin, v1.end(), v2.begin(), v2.end(), resultado.begin());
+  merge(v1.begin(), v1.end(), v2.begin(), v2.end(), resultado.begin());
   return resultado;
 }
 
+vector<int> readDataset(const string& filename) {
+    vector<int> vec;
+    ifstream file(filename);
+    int num;
+    while (file >> num) {
+        vec.push_back(num);
+    }
+    file.close();
+    return vec;
+}
+
 int main() {
-  vector<int> vec = {38, 27, 43, 3, 9, 82, 10};
+  string filename = "dataset.txt";
+  vector<int> vec = readDataset(filename);
+
   cout << "Vector original: ";
   for (int num : vec) {
       cout << num << " ";
