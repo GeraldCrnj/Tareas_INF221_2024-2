@@ -10,7 +10,7 @@ def generate_dataset(filename, size, lower_bound, upper_bound):
 lower_bound = 1
 upper_bound = 1000
 
-size = int(input("Ingrese dimensión de las matrices: "))
+size = int(input("Ingrese dimensión de su vector: "))
 
 for i in range(10):
     filename = f"dataset{i}.txt"
