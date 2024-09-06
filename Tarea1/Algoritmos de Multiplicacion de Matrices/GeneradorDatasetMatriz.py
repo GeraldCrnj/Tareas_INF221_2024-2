@@ -27,6 +27,6 @@ max_val = 1000
 
 size = int(input("Ingrese dimensión de las matrices: "))
 
-for i in range(10):
+for i in range(2):
     filename = f"dataset{i}.txt"
     generate_matrix_dataset(filename, size, min_val, max_val)

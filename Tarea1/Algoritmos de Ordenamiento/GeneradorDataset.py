@@ -12,6 +12,6 @@ upper_bound = 1000
 
 size = int(input("Ingrese dimensión de su vector: "))
 
-for i in range(10):
+for i in range(2):
     filename = f"dataset{i}.txt"
     generate_dataset(filename, size, lower_bound, upper_bound)
