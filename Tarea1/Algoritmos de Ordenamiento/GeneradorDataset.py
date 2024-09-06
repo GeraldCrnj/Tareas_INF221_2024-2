@@ -7,9 +7,11 @@ def generate_dataset(filename, size, lower_bound, upper_bound):
             f.write(f"{num}\n")
 
 # Parámetros
-filename = "dataset.txt"
-size = random.randint(1, 500)
 lower_bound = 1
 upper_bound = 1000
 
-generate_dataset(filename, size, lower_bound, upper_bound)
+size = int(input("Ingrese dimensión de las matrices: "))
+
+for i in range(10):
+    filename = f"dataset{i}.txt"
+    generate_dataset(filename, size, lower_bound, upper_bound)
