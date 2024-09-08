@@ -34,11 +34,11 @@ int main() {
   string filename = "dataset.txt";
   vector<int> vec = readDataset(filename);
 
-  cout << "Vector original: ";
+  /*cout << "Vector original: ";
   for (int num : vec) {
       cout << num << " ";
   }
-  cout << endl;
+  cout << endl;*/
 
   auto start = std::chrono::high_resolution_clock::now();
   vec = mergeSort(vec);
@@ -46,11 +46,11 @@ int main() {
   chrono::duration<double> elapsed = end - start;
   cout << "Tiempo de ejecución: " << elapsed.count() << " segundos" << std::endl;
 
-  cout << "Vector ordenado: ";
+  /*cout << "Vector ordenado: ";
   for (int num : vec) {
       cout << num << " ";
   }
-  cout << endl;
+  cout << endl;*/
 
   return 0;
 }

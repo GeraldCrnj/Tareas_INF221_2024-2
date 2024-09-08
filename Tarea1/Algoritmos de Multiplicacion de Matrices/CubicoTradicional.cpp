@@ -50,6 +50,7 @@ int main() {
     archivo.close();
 
     // Imprimir la matriz A
+    /*
     cout << "Matriz A: " << endl;
     for (const auto& row : A) {
         for (int val : row) {
@@ -64,7 +65,7 @@ int main() {
             cout << val << " ";
         }
         cout << std::endl;
-    }
+    }*/
     
     auto start = std::chrono::high_resolution_clock::now();
     Matrix C = multiplicar_matrices(A, B);
@@ -73,14 +74,14 @@ int main() {
     cout << "Tiempo de ejecución: " << elapsed.count() << " segundos" << std::endl;
 
     
-    cout << "Matriz C: " << endl;
+    /*cout << "Matriz C: " << endl;
     // Imprimir la matriz resultante C
     for (const auto& row : C) {
         for (int val : row) {
             cout << val << " ";
         }
         cout << std::endl;
-    }
+    }*/
     
     return 0;
 }

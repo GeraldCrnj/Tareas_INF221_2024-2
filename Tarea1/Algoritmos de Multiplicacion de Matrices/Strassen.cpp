@@ -1,53 +1,75 @@
 #include <iostream>
 #include <vector>
+#include <cmath>
+#include <omp.h>
 #include <chrono>
-#include <fstream>  // Necesario para std::ifstream
-#include <sstream>  // Necesario para std::istringstream
+#include <fstream>
 
 using namespace std;
 
-typedef vector<vector<int>> matrix;
+const int UMBRAL = 64;  // Umbral para usar la multiplicación cúbica
 
-matrix add(const matrix &A, const matrix &B, int size) {
-    matrix C(size, vector<int>(size, 0));
-    for (int i = 0; i < size; i++)
-        for (int j = 0; j < size; j++)
+// Función para multiplicar matrices de forma cúbica (tradicional)
+vector<vector<int>> multiplicarMatricesCubicamente(const vector<vector<int>>& A, const vector<vector<int>>& B) {
+    int n = A.size();
+    vector<vector<int>> C(n, vector<int>(n, 0));
+    for (int i = 0; i < n; ++i)
+        for (int j = 0; j < n; ++j)
+            for (int k = 0; k < n; ++k)
+                C[i][j] += A[i][k] * B[k][j];
+    return C;
+}
+
+// Función para sumar matrices
+vector<vector<int>> sumarMatrices(const vector<vector<int>>& A, const vector<vector<int>>& B) {
+    int n = A.size();
+    vector<vector<int>> C(n, vector<int>(n, 0));
+    #pragma omp parallel for
+    for (int i = 0; i < n; ++i)
+        for (int j = 0; j < n; ++j)
             C[i][j] = A[i][j] + B[i][j];
     return C;
 }
 
-matrix subtract(const matrix &A, const matrix &B, int size) {
-    matrix C(size, vector<int>(size, 0));
-    for (int i = 0; i < size; i++)
-        for (int j = 0; j < size; j++)
+// Función para restar matrices
+vector<vector<int>> restarMatrices(const vector<vector<int>>& A, const vector<vector<int>>& B) {
+    int n = A.size();
+    vector<vector<int>> C(n, vector<int>(n, 0));
+    #pragma omp parallel for
+    for (int i = 0; i < n; ++i)
+        for (int j = 0; j < n; ++j)
             C[i][j] = A[i][j] - B[i][j];
     return C;
 }
 
-matrix strassen(const matrix &A, const matrix &B, int size) {
-    if (size == 1) {
-        matrix C(1, vector<int>(1, 0));
-        C[0][0] = A[0][0] * B[0][0];
-        return C;
+// Algoritmo de Strassen
+vector<vector<int>> strassen(const vector<vector<int>>& A, const vector<vector<int>>& B) {
+    int n = A.size();
+
+    // Usar la multiplicación cúbica tradicional para matrices pequeñas
+    if (n <= UMBRAL) {
+        return multiplicarMatricesCubicamente(A, B);
     }
 
-    int newSize = size / 2;
-    matrix A11(newSize, vector<int>(newSize, 0));
-    matrix A12(newSize, vector<int>(newSize, 0));
-    matrix A21(newSize, vector<int>(newSize, 0));
-    matrix A22(newSize, vector<int>(newSize, 0));
-    matrix B11(newSize, vector<int>(newSize, 0));
-    matrix B12(newSize, vector<int>(newSize, 0));
-    matrix B21(newSize, vector<int>(newSize, 0));
-    matrix B22(newSize, vector<int>(newSize, 0));
+    int newSize = n / 2;
+    vector<vector<int>> A11(newSize, vector<int>(newSize));
+    vector<vector<int>> A12(newSize, vector<int>(newSize));
+    vector<vector<int>> A21(newSize, vector<int>(newSize));
+    vector<vector<int>> A22(newSize, vector<int>(newSize));
+    
+    vector<vector<int>> B11(newSize, vector<int>(newSize));
+    vector<vector<int>> B12(newSize, vector<int>(newSize));
+    vector<vector<int>> B21(newSize, vector<int>(newSize));
+    vector<vector<int>> B22(newSize, vector<int>(newSize));
 
+    // Dividir las matrices en submatrices
     for (int i = 0; i < newSize; i++) {
         for (int j = 0; j < newSize; j++) {
             A11[i][j] = A[i][j];
             A12[i][j] = A[i][j + newSize];
             A21[i][j] = A[i + newSize][j];
             A22[i][j] = A[i + newSize][j + newSize];
-
+            
             B11[i][j] = B[i][j];
             B12[i][j] = B[i][j + newSize];
             B21[i][j] = B[i + newSize][j];
@@ -55,112 +77,83 @@ matrix strassen(const matrix &A, const matrix &B, int size) {
         }
     }
 
-    matrix M1 = strassen(add(A11, A22, newSize), add(B11, B22, newSize), newSize);
-    matrix M2 = strassen(add(A21, A22, newSize), B11, newSize);
-    matrix M3 = strassen(A11, subtract(B12, B22, newSize), newSize);
-    matrix M4 = strassen(A22, subtract(B21, B11, newSize), newSize);
-    matrix M5 = strassen(add(A11, A12, newSize), B22, newSize);
-    matrix M6 = strassen(subtract(A21, A11, newSize), add(B11, B12, newSize), newSize);
-    matrix M7 = strassen(subtract(A12, A22, newSize), add(B21, B22, newSize), newSize);
+    // Calcular los productos intermedios (M1 a M7)
+    vector<vector<int>> M1 = strassen(sumarMatrices(A11, A22), sumarMatrices(B11, B22));
+    vector<vector<int>> M2 = strassen(sumarMatrices(A21, A22), B11);
+    vector<vector<int>> M3 = strassen(A11, restarMatrices(B12, B22));
+    vector<vector<int>> M4 = strassen(A22, restarMatrices(B21, B11));
+    vector<vector<int>> M5 = strassen(sumarMatrices(A11, A12), B22);
+    vector<vector<int>> M6 = strassen(restarMatrices(A21, A11), sumarMatrices(B11, B12));
+    vector<vector<int>> M7 = strassen(restarMatrices(A12, A22), sumarMatrices(B21, B22));
 
-    matrix C(size, vector<int>(size, 0));
+    // Combinar las submatrices para obtener el resultado
+    vector<vector<int>> C11 = sumarMatrices(restarMatrices(sumarMatrices(M1, M4), M5), M7);
+    vector<vector<int>> C12 = sumarMatrices(M3, M5);
+    vector<vector<int>> C21 = sumarMatrices(M2, M4);
+    vector<vector<int>> C22 = sumarMatrices(restarMatrices(sumarMatrices(M1, M3), M2), M6);
+
+    // Unir las submatrices en la matriz resultante
+    vector<vector<int>> C(n, vector<int>(n));
     for (int i = 0; i < newSize; i++) {
         for (int j = 0; j < newSize; j++) {
-            C[i][j] = M1[i][j] + M4[i][j] - M5[i][j] + M7[i][j];
-            C[i][j + newSize] = M3[i][j] + M5[i][j];
-            C[i + newSize][j] = M2[i][j] + M4[i][j];
-            C[i + newSize][j + newSize] = M1[i][j] - M2[i][j] + M3[i][j] + M6[i][j];
+            C[i][j] = C11[i][j];
+            C[i][j + newSize] = C12[i][j];
+            C[i + newSize][j] = C21[i][j];
+            C[i + newSize][j + newSize] = C22[i][j];
         }
     }
 
     return C;
 }
 
-matrix leer_matriz(ifstream& archivo, int& filas, int& columnas) {
-    archivo >> filas >> columnas;
-    matrix matriz(filas, vector<int>(columnas, 0));
-    for (int i = 0; i < filas; ++i) {
-        for (int j = 0; j < columnas; ++j) {
-            archivo >> matriz[i][j];
+// Función para leer matrices desde un archivo de texto
+vector<vector<int>> leerMatrizDesdeArchivo(ifstream &file, int &n, int &m) {
+    file >> n >> m;
+    vector<vector<int>> matriz(n, vector<int>(m));
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < m; j++) {
+            file >> matriz[i][j];
         }
     }
     return matriz;
 }
 
+// Función principal
 int main() {
-    ifstream archivo("dataset.txt");
-    if (!archivo) {
-        cerr << "Error al abrir el archivo" << endl;
-        return 1;
+    ifstream file("dataset.txt");
+    int n, m;
+
+    // Leer la primera matriz A
+    vector<vector<int>> A = leerMatrizDesdeArchivo(file, n, m);
+
+    // Leer la segunda matriz B
+    vector<vector<int>> B = leerMatrizDesdeArchivo(file, n, m);
+
+    // Verificar si las dimensiones son compatibles
+    if (A[0].size() != B.size()) {
+        cerr << "Dimensiones incompatibles para la multiplicación de matrices." << endl;
+        return -1;
     }
 
-    int rowsA, colsA, rowsB, colsB;
-    matrix A, B;
-
-    // Leer matrices
-    A = leer_matriz(archivo, rowsA, colsA);
-    B = leer_matriz(archivo, rowsB, colsB);
-
-    // Imprimir la matriz A
-    cout << "Matriz A: " << endl;
-    for (const auto& row : A) {
-        for (int val : row) {
-            cout << val << " ";
-        }
-        cout << std::endl;
-    }
-    // Imprimir la matriz B
-    cout << "Matriz B: " << endl;
-    for (const auto& row : B) {
-        for (int val : row) {
-            cout << val << " ";
-        }
-        cout << std::endl;
-    }
-
-    archivo.close();
-
-    // Verificar que las dimensiones sean compatibles para la multiplicación
-    if (colsA != rowsB) {
-        cerr << "Las dimensiones de las matrices no son compatibles para la multiplicación." << endl;
-        return 1;
-    }
-
-    // Imprimir la matriz A
-    cout << "Matriz A: " << endl;
-    for (const auto& row : A) {
-        for (int val : row) {
-            cout << val << " ";
-        }
-        cout << endl;
-    }
-
-    // Imprimir la matriz B
-    cout << "Matriz B: " << endl;
-    for (const auto& row : B) {
-        for (int val : row) {
-            cout << val << " ";
-        }
-        cout << endl;
-    }
-
-    auto start = std::chrono::high_resolution_clock::now();
-    matrix C = strassen(A, B, rowsA);  // Tamaño de la matriz es rowsA ya que rowsA == colsB
-    auto end = std::chrono::high_resolution_clock::now();
+    auto start = chrono::high_resolution_clock::now();
+    // Multiplicar las matrices usando Strassen
+    vector<vector<int>> C = strassen(A, B);
+    auto end = chrono::high_resolution_clock::now();
     chrono::duration<double> elapsed = end - start;
     cout << "Tiempo de ejecución: " << elapsed.count() << " segundos" << endl;
 
-    cout << "Resultado de la multiplicación:" << endl;
-    // Imprimir la matriz resultante C
+    // Imprimir la matriz resultante
+    /*cout << "Matriz Resultante C:" << endl;
     for (const auto& row : C) {
-        for (int val : row) {
+        for (const auto& val : row) {
             cout << val << " ";
         }
         cout << endl;
-    }
+    }*/
 
     return 0;
 }
+
 
 /*
 REFERENCIAS:

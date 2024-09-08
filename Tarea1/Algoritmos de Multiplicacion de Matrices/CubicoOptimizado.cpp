@@ -63,6 +63,7 @@ int main() {
     archivo.close();
 
     // Imprimir la matriz A
+    /*
     cout << "Matriz A: " << endl;
     for (const auto& row : A) {
         for (int val : row) {
@@ -77,7 +78,7 @@ int main() {
             cout << val << " ";
         }
         cout << std::endl;
-    }
+    }*/
     
     auto start = std::chrono::high_resolution_clock::now();
     B = transponer(B);
@@ -86,7 +87,7 @@ int main() {
     chrono::duration<double> elapsed = end - start;
     cout << "Tiempo de ejecución: " << elapsed.count() << " segundos" << std::endl;
 
-    
+    /*
     cout << "Matriz C: " << endl;
     // Imprimir la matriz resultante C
     for (const auto& row : C) {
@@ -94,7 +95,7 @@ int main() {
             cout << val << " ";
         }
         cout << std::endl;
-    }
+    }*/
     
     return 0;
 }
