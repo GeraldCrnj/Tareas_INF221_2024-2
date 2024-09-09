@@ -1,6 +1,6 @@
 # Tarea 1 - Dividir y Conquistar
 
-En esta carpeta se encuentran los distintos algoritmos analizados en el informe subido a aula.
+En esta carpeta se encuentran los distintos algoritmos analizados en el informe subido a aula. Los algoritmos fueron implementados por la estudiante, a excepción del algoritmo de Strassen, en multiplicación de matrices.
 
 # Descripción archivos carpetas
 ## Carpeta "Algoritmos de Ordenamientos"
