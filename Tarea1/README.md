@@ -2,6 +2,7 @@
 
 En esta carpeta se encuentran los distintos algoritmos analizados en el informe subido a aula.
 
+# Descripción archivos carpetas
 ## Carpeta "Algoritmos de Ordenamientos"
 * GeneradorDataset.py : Programa python diseñado para poder crear datasets para los algoritmos de ordenamiento, explicado en Informe. Se debe ingresar número de elementos a ordenar.
 * SortingBiblio.cpp : Programa en C++ diseñado para poder ordenar un vector usando la función implementada por la librería ..
@@ -24,3 +25,13 @@ En esta carpeta se encuentran los distintos algoritmos analizados en el informe 
 
 ## Carpeta "Datasets Matrices"
 * Carpeta posee datasets en formato ".txt" dados para probar los algoritmos usados para creación de informe, al momento de querer usar un dataset mover a carpeta "Algoritmos de Multiplicación de Matrices", si se trata de el archivo "dataset1.txt" modificar y dejar como "dataset.txt", ya que así los lee el programa de cada algoritmo.
+
+# Instrucciones de complicaciones
+Todos los programas fueron compilados y ejecutados en Ubuntu 22.04.
+Para compilar utilizar el siguiente comando:
+* g++ -o algoritmo algoritmo.cpp
+Reemplazando "algoritmo" para el algoritmo a ejecutar, se recomienda mantener los nombres de los ejecutables por nombre de algoritmo para poder comparar los tiempos con el mismo dataset de forma más ordenada.
+Luego para ejecutar el programa se utiliza el comando:
+* ./algoritmo
+
+## Cualquier duda o sugerencia enviar correo a: geraldine.cornejo@usm.cl
