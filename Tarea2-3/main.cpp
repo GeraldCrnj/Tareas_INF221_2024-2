@@ -91,10 +91,10 @@ int DistanciaFuerzaBruta(string S1, string S2){
 
 int main(){
     // Cargar los archivos de costos
-    cargarCostoVector("costosInsercion.txt", tabla_costo_insercion);
-    cargarCostoVector("costosEliminar.txt", tabla_costo_eliminacion);
-    cargarCostoMatriz("costosSustituir.txt", tabla_costo_sustitucion);
-    cargarCostoMatriz("costosTransponer.txt", tabla_costo_transposicion);
+    cargarCostoVector("cost_insert.txt", tabla_costo_insercion);
+    cargarCostoVector("cost_delete.txt", tabla_costo_eliminacion);
+    cargarCostoMatriz("cost_replace.txt", tabla_costo_sustitucion);
+    cargarCostoMatriz("cost_transpose.txt", tabla_costo_transposicion);
 
     string S1,S2;
     cout << "Ingresa la primera cadena: ";

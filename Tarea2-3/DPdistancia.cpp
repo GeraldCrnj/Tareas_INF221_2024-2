@@ -58,8 +58,8 @@ int costo_sub(char a, char b) {
 int costo_trans(char a, char b) {
     return tabla_costo_transposicion[a - 'a'][b - 'a'];
 }
-
-int DistanciaFuerzaBruta(string S1, string S2){
+/*
+int DistanciaDP(string S1, string S2){
     if (S1==S2) return 0;
     if (S1 == ""){
         int costo = 0;
@@ -88,14 +88,14 @@ int DistanciaFuerzaBruta(string S1, string S2){
     
     return minCosto;
 }
-
+*/
 int main(){
     // Cargar los archivos de costos
-    cargarCostoVector("costosInsercion.txt", tabla_costo_insercion);
-    cargarCostoVector("costosEliminar.txt", tabla_costo_eliminacion);
-    cargarCostoMatriz("costosSustituir.txt", tabla_costo_sustitucion);
-    cargarCostoMatriz("costosTransponer.txt", tabla_costo_transposicion);
-
+    cargarCostoVector("cost_insert.txt", tabla_costo_insercion);
+    cargarCostoVector("cost_delete.txt", tabla_costo_eliminacion);
+    cargarCostoMatriz("cost_replace.txt", tabla_costo_sustitucion);
+    cargarCostoMatriz("cost_transpose.txt", tabla_costo_transposicion);
+    
     string S1,S2;
     cout << "Ingresa la primera cadena: ";
     cin >> S1;
@@ -103,10 +103,10 @@ int main(){
     cin >> S2;
 
     // Calcular la distancia mínima de edición usando fuerza bruta
-    int costoMinimo = DistanciaFuerzaBruta(S1, S2);
+    //int costoMinimo = DistanciaFuerzaBruta(S1, S2);
 
     // Mostrar el resultado
-    cout << "La distancia mínima de edición es: " << costoMinimo << endl;
+    //cout << "La distancia mínima de edición es: " << costoMinimo << endl;
 
     return 0;
 }
