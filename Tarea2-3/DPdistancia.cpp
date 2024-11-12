@@ -58,55 +58,66 @@ int costo_sub(char a, char b) {
 int costo_trans(char a, char b) {
     return tabla_costo_transposicion[a - 'a'][b - 'a'];
 }
-/*
-int DistanciaDP(string S1, string S2){
-    if (S1==S2) return 0;
-    if (S1 == ""){
-        int costo = 0;
-        for(char c: S2) costo += costo_ins(c);
-        return  costo;
-    } else if (S2 == ""){
-        int costo = 0;
-        for(char c: S1) costo += costo_ins(c);
-        return  costo;
+
+int DistanciaDP(string S1, string S2) {
+    int n = S1.length();
+    int m = S2.length();
+
+    // Crear la matriz de DP
+    vector<vector<int>> dp(n + 1, vector<int>(m + 1, INT_MAX));
+
+    // Inicialización de las fronteras (cuando una de las cadenas está vacía)
+    for (int i = 0; i <= n; ++i) {
+        dp[i][0] = 0;
+        for (int k = 0; k < i; ++k) dp[i][0] += costo_del(S1[k]);
     }
 
-    int minCosto = INT_MAX; 
-
-    int insertar = DistanciaFuerzaBruta(S1.substr(1),S2) + costo_ins(S2[0]);
-    minCosto = min(minCosto,insertar);
-    int eliminar = DistanciaFuerzaBruta(S1.substr(1),S2) + costo_del(S1[0]);
-    minCosto = min(minCosto,eliminar);
-    int sustituir = DistanciaFuerzaBruta(S1.substr(1),S2.substr(1)) + costo_sub(S1[0],S2[0]);
-    minCosto = min(minCosto,sustituir);
-    if (S1.length()>1 && S2.length()>1 && ( S1[1]==S2[0] || S1[0]==S2[1])) {
-        int transponer = INT_MAX;
-        if (S1[1]==S2[0]) transponer = DistanciaFuerzaBruta(S1[0]+S1.substr(2),S2.substr(1)) + costo_trans(S1[0], S1[1]);
-        else if (S1[0]==S2[1]) transponer = DistanciaFuerzaBruta(S1.substr(1),S2[0]+S2.substr(2)) + costo_trans(S1[0], S1[1]);
-        minCosto = min(minCosto,transponer);
+    for (int j = 0; j <= m; ++j) {
+        dp[0][j] = 0;
+        for (int k = 0; k < j; ++k) dp[0][j] += costo_ins(S2[k]);
     }
-    
-    return minCosto;
+
+    // Llenar la matriz de DP
+    for (int i = 1; i <= n; ++i) {
+        for (int j = 1; j <= m; ++j) {
+            // Cálculo de las operaciones: inserción, eliminación y sustitución
+            dp[i][j] = min({
+                dp[i-1][j] + costo_del(S1[i-1]),   // Eliminar
+                dp[i][j-1] + costo_ins(S2[j-1]),   // Insertar
+                dp[i-1][j-1] + costo_sub(S1[i-1], S2[j-1])  // Sustituir
+            });
+
+            // Transposición (si corresponde)
+            if (i > 1 && j > 1 && (S1[i-1] == S2[j-2] || S1[i-2] == S2[j-1])) {
+                int transponer = dp[i-2][j-2] + costo_trans(S1[i-2], S1[i-1]);
+                dp[i][j] = min(dp[i][j], transponer);
+            }
+        }
+    }
+
+    // El costo mínimo de transformar S1 en S2 estará en dp[n][m]
+    return dp[n][m];
 }
-*/
+
 int main(){
     // Cargar los archivos de costos
     cargarCostoVector("cost_insert.txt", tabla_costo_insercion);
     cargarCostoVector("cost_delete.txt", tabla_costo_eliminacion);
     cargarCostoMatriz("cost_replace.txt", tabla_costo_sustitucion);
     cargarCostoMatriz("cost_transpose.txt", tabla_costo_transposicion);
-    
+
     string S1,S2;
     cout << "Ingresa la primera cadena: ";
     cin >> S1;
     cout << "Ingresa la segunda cadena: ";
     cin >> S2;
+    
 
     // Calcular la distancia mínima de edición usando fuerza bruta
-    //int costoMinimo = DistanciaFuerzaBruta(S1, S2);
+    int costoMinimo = DistanciaDP(S1, S2);
 
     // Mostrar el resultado
-    //cout << "La distancia mínima de edición es: " << costoMinimo << endl;
+    cout << endl << "La distancia mínima de edición es: " << costoMinimo << endl;
 
     return 0;
 }
