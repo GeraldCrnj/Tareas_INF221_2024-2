@@ -64,23 +64,28 @@ int DistanciaDP(string S1, string S2) {
     int m = S2.length();
 
     // Crear la matriz de DP
-    vector<vector<int>> dp(n + 1, vector<int>(m + 1, INT_MAX));
+    vector<vector<int>> dp(m + 1, vector<int>(n + 1, INT_MAX));
 
     // Inicialización de las fronteras (cuando una de las cadenas está vacía)
-    for (int i = 0; i <= n; ++i) {
+    for (int i = 0; i < dp.size(); ++i) {
         dp[i][0] = 0;
         for (int k = 0; k < i; ++k) dp[i][0] += costo_del(S1[k]);
     }
 
-    for (int j = 0; j <= m; ++j) {
+    for (int j = 0; j <dp.size(); ++j) {
         dp[0][j] = 0;
         for (int k = 0; k < j; ++k) dp[0][j] += costo_ins(S2[k]);
     }
 
     // Llenar la matriz de DP
-    for (int i = 1; i <= n; ++i) {
-        for (int j = 1; j <= m; ++j) {
+    for (int row = 1; row <= dp.size(); ++row) {
+        for (int col = 1; col <= dp[0].size(); ++col) {
             // Cálculo de las operaciones: inserción, eliminación y sustitución
+            if(S1[col-1]==S2[row-1]){
+                dp[row][col] = dp[row-1][col-1];
+            } else{
+                dp[row][col]= min ({dp[row][col-1], dp[row-1][col], dp[row-1][col-1]})+1;
+            }/*
             dp[i][j] = min({
                 dp[i-1][j] + costo_del(S1[i-1]),   // Eliminar
                 dp[i][j-1] + costo_ins(S2[j-1]),   // Insertar
@@ -88,15 +93,15 @@ int DistanciaDP(string S1, string S2) {
             });
 
             // Transposición (si corresponde)
-            if (i > 1 && j > 1 && (S1[i-1] == S2[j-2] || S1[i-2] == S2[j-1])) {
-                int transponer = dp[i-2][j-2] + costo_trans(S1[i-2], S1[i-1]);
-                dp[i][j] = min(dp[i][j], transponer);
-            }
+            if (row > 1 && col > 1 && (S1[row-1] == S2[col-2] || S1[row-2] == S2[col-1])) {
+                int transponer = dp[row-2][col-2] + costo_trans(S1[row-2], S1[row-1]);
+                dp[i][j] = min(dp[row][col], transponer);
+            }*/
         }
     }
-
+    
     // El costo mínimo de transformar S1 en S2 estará en dp[n][m]
-    return dp[n][m];
+    return dp[dp.size()-1][dp[0].size()];
 }
 
 int main(){
