@@ -1,4 +1,5 @@
 #include <iostream>
+#include "funciones.h"
 #include <vector>
 #include <string>
 #include <climits>  // Para INT_MAX
@@ -6,59 +7,14 @@
 #include <algorithm>
 using namespace std;
 
-const int ALPHABET_SIZE = 26;  // Tamaño del alfabeto inglés en minúsculas
-
-// Tablas de costos globales
-vector<int> tabla_costo_insercion(ALPHABET_SIZE); // Costos de inserción
-vector<int> tabla_costo_eliminacion(ALPHABET_SIZE); // Costos de eliminación
-vector<std::vector<int>> tabla_costo_sustitucion(ALPHABET_SIZE, std::vector<int>(ALPHABET_SIZE)); // Costos de sustitución
-vector<std::vector<int>> tabla_costo_transposicion(ALPHABET_SIZE, std::vector<int>(ALPHABET_SIZE)); // Costos de transposición
-
-// Función para cargar un archivo de vector de costos (inserción/eliminación)
-void cargarCostoVector(const std::string& nombreArchivo, std::vector<int>& tabla) {
-    ifstream archivo(nombreArchivo);
-    if (!archivo) {
-        cerr << "No se pudo abrir el archivo: " << nombreArchivo << std::endl;
-        return;
-    }
-    for (int i = 0; i < ALPHABET_SIZE; ++i) {
-        archivo >> tabla[i];
-    }
-    archivo.close();
-}
-
-// Función para cargar un archivo de matriz de costos (sustitución/transposición)
-void cargarCostoMatriz(const std::string& nombreArchivo, std::vector<std::vector<int>>& tabla) {
-    ifstream archivo(nombreArchivo);
-    if (!archivo) {
-        cerr << "No se pudo abrir el archivo: " << nombreArchivo << std::endl;
-        return;
-    }
-    for (int i = 0; i < ALPHABET_SIZE; ++i) {
-        for (int j = 0; j < ALPHABET_SIZE; ++j) {
-            archivo >> tabla[i][j];
-        }
-    }
-    archivo.close();
-}
-
-// Funciones de costos que utilizan las tablas globales
-int costo_ins(char b) {
-    return tabla_costo_insercion[b - 'a'];
-}
-
-int costo_del(char a) {
-    return tabla_costo_eliminacion[a - 'a'];
-}
-
-int costo_sub(char a, char b) {
-    return tabla_costo_sustitucion[a - 'a'][b - 'a'];
-}
-
-int costo_trans(char a, char b) {
-    return tabla_costo_transposicion[a - 'a'][b - 'a'];
-}
-
+/*
+int DistanciaFuerzaBruta(string S1, string S2)
+    * Parámetros
+        - S1: Una cadena de caracteres que representa la primera palabra o secuencia a comparar.
+        - S2: Una cadena de caracteres que representa la segunda palabra o secuencia a comparar.
+    * Retorno: Retorna un valor entero que representa la distancia de edición mínima entre S1 y S2, considerando los costos de inserción, eliminación, sustitución, y transposición de caracteres.
+    * Descripción: Esta función calcula la distancia de edición entre las cadenas S1 y S2 utilizando un enfoque de fuerza bruta. Evalúa las posibles operaciones entre los caracteres de las cadenas (inserción, eliminación, sustitución y transposición) y selecciona el costo mínimo en cada paso. La función es recursiva y calcula la distancia mínima probando cada operación posible, lo que puede ser ineficiente para cadenas largas debido al tiempo de ejecución exponencial.
+*/
 int DistanciaFuerzaBruta(string S1, string S2){
     if (S1==S2) return 0;
     if (S1 == ""){
