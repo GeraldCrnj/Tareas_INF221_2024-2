@@ -31,14 +31,15 @@ int DistanciaFuerzaBruta(string S1, string S2){
 
     int insertar = DistanciaFuerzaBruta(S1.substr(1),S2) + costo_ins(S2[0]);
     minCosto = min(minCosto,insertar);
+   
     int eliminar = DistanciaFuerzaBruta(S1.substr(1),S2) + costo_del(S1[0]);
     minCosto = min(minCosto,eliminar);
+   
     int sustituir = DistanciaFuerzaBruta(S1.substr(1),S2.substr(1)) + costo_sub(S1[0],S2[0]);
     minCosto = min(minCosto,sustituir);
-    if (S1.length()>1 && S2.length()>1 && ( S1[1]==S2[0] || S1[0]==S2[1])) {
-        int transponer = INT_MAX;
-        if (S1[1]==S2[0]) transponer = DistanciaFuerzaBruta(S1[0]+S1.substr(2),S2.substr(1)) + costo_trans(S1[0], S1[1]);
-        else if (S1[0]==S2[1]) transponer = DistanciaFuerzaBruta(S1.substr(1),S2[0]+S2.substr(2)) + costo_trans(S1[0], S1[1]);
+   
+    if (S1.length()>1 && S2.length()>1 && ( S1[1]==S2[0] && S1[0]==S2[1])) {
+        int transponer = DistanciaFuerzaBruta(S1.substr(2),S2.substr(2)) + costo_trans(S1[0], S1[1]);
         minCosto = min(minCosto,transponer);
     }
     
