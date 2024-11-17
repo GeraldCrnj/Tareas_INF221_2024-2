@@ -66,3 +66,26 @@ Este programa también solicitará dos cadenas y calculará la distancia de edic
 ## Notas Adicionales
 
 Este proyecto proporciona una comparación entre dos enfoques para el cálculo de distancias de edición. El enfoque de DP es más eficiente para cadenas largas, mientras que el enfoque de fuerza bruta es más adecuado para comparar resultados o estudiar el comportamiento del cálculo en cadenas cortas.
+
+Las operaciones son realizadas sobre las cadenas de izquierda a derecha. No se permite el orden contrario.
+
+Para la operación de transposición se consideran solo los casos donde se intercambian dos carácteres adyacentes, los cuales no pueden volver a ser alterados, es decir:
+* "abc" y "bac": Es posible hacer transposición en los primeros dos carácteres de S1, de modo que S1 resulte igual a S2.
+* "atc" y "tic": En caso de transponer los primeros carácteres de S1 se obtiene "tac" sin opción de poder modificar la "a", por lo que en este ejemplo, la transposición es una operación inviable.
+
+## Casos de pruebas
+Las funciones de costos para este ejemplo son las siguientes:
+* costo_sub(a, b) = 2 si a ̸= b, y 0 si a = b.
+* costo_ins(b) = 1 para cualquier carácter b.
+* costo_del(a) = 1 para cualquier carácter a.
+* costo_trans(a, b) = 1 para transponer los caracteres adyacentes a y b.
+
+Las dos cadenas de entrada son las siguientes:
+* S1 = “"
+* S2 = “”
+y la salida esperada es la siguiente:
+D i s t a n c i a Mí nima de E d i c i ón : 9
+A continuación se muestra una secuencia posible de operaciones con costo total 5:
+1)  → : Sustituir ’i’ por ’e’ en posición 1 (costo 2).
+
+El costo total es 2+2+1+2+2 = 9.
