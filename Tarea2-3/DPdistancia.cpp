@@ -5,6 +5,7 @@
 #include <climits>  // Para INT_MAX
 #include <fstream>  // Para cargar archivos de costos
 #include <algorithm>
+#include <chrono> 
 using namespace std;
 
 /*
@@ -44,22 +45,23 @@ int DistanciaDP(string S1, string S2) {
                     int insertar = dp[row][col - 1] + costo_ins(S2[row - 1]);
                     int eliminar = dp[row - 1][col] + costo_del(S1[col - 1]);
                     dp[row][col] = min({sustituir, insertar, eliminar});
+                    // Caso 3: Transposición de caracteres adyacentes
+                    if (row > 1 && col > 1 && S1[col - 1] == S2[row - 2] && S1[col - 2] == S2[row - 1]) {
+                        int transponer = dp[row - 2][col - 2] + costo_trans(S1[col - 2], S1[col - 1]);
+                        dp[row][col] = min(dp[row][col], transponer);
+                    }
                 }
 
-                // Caso 3: Transposición de caracteres adyacentes
-                if (row > 1 && col > 1 && S1[col - 1] == S2[row - 2] && S1[col - 2] == S2[row - 1]) {
-                    int transponer = dp[row - 2][col - 2] + costo_trans(S1[col - 2], S1[col - 1]);
-                    dp[row][col] = min(dp[row][col], transponer);
-                }
+                
             }
         }
         //DESCOMENTAR SOLO EN CASO DE QUERER VISUALIZAR LA MATRIZ DP
-        for (int i = 0; i <= m; i++) {
+        /*for (int i = 0; i <= m; i++) {
             for (int j = 0; j <= n; j++) {
                 cout << dp[i][j] << " ";
             }
             cout << endl;
-        }
+        }*/
         return dp[m][n];
 }
 
@@ -72,16 +74,19 @@ int main(){
 
     string S1,S2;
     cout << "Ingresa la primera cadena: ";
-    cin >> S1;
+    getline(cin, S1);
     cout << "Ingresa la segunda cadena: ";
-    cin >> S2;
-    
+    getline(cin, S2);
 
-    // Calcular la distancia mínima de edición usando dp
+    // Iniciar medición de tiempo
+    auto start = chrono::high_resolution_clock::now();
     int costoMinimo = DistanciaDP(S1, S2);
+    auto end = chrono::high_resolution_clock::now();
 
-    // Mostrar el resultado
-    cout << endl << "La distancia mínima de edición es: " << costoMinimo << endl;
-
+    // Calcular y mostrar el tiempo transcurrido
+    auto duration = chrono::duration_cast<chrono::milliseconds>(end - start);
+    cout << "La distancia mínima de edición es: " << costoMinimo << endl;
+    cout << "Tiempo de ejecución: " << duration.count() << " ms" << endl;
+    
     return 0;
 }

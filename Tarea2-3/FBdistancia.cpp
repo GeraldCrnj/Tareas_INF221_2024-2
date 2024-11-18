@@ -5,6 +5,7 @@
 #include <climits>  // Para INT_MAX
 #include <fstream>  // Para cargar archivos de costos
 #include <algorithm>
+#include <chrono> 
 using namespace std;
 
 /*
@@ -29,14 +30,10 @@ int DistanciaFuerzaBruta(string S1, string S2){
 
     int minCosto = INT_MAX; 
 
-    int insertar = DistanciaFuerzaBruta(S1.substr(1),S2) + costo_ins(S2[0]);
-    minCosto = min(minCosto,insertar);
-   
+    int insertar = DistanciaFuerzaBruta(S1,S2.substr(1)) + costo_ins(S2[0]);
     int eliminar = DistanciaFuerzaBruta(S1.substr(1),S2) + costo_del(S1[0]);
-    minCosto = min(minCosto,eliminar);
-   
     int sustituir = DistanciaFuerzaBruta(S1.substr(1),S2.substr(1)) + costo_sub(S1[0],S2[0]);
-    minCosto = min(minCosto,sustituir);
+    minCosto = min({sustituir, insertar, eliminar});
    
     if (S1.length()>1 && S2.length()>1 && ( S1[1]==S2[0] && S1[0]==S2[1])) {
         int transponer = DistanciaFuerzaBruta(S1.substr(2),S2.substr(2)) + costo_trans(S1[0], S1[1]);
@@ -55,15 +52,19 @@ int main(){
 
     string S1,S2;
     cout << "Ingresa la primera cadena: ";
-    cin >> S1;
+    getline(cin, S1);
     cout << "Ingresa la segunda cadena: ";
-    cin >> S2;
-
-    // Calcular la distancia mínima de edición usando fuerza bruta
+    getline(cin, S2);
+   // Medir tiempo de ejecución
+    auto start = chrono::high_resolution_clock::now();
     int costoMinimo = DistanciaFuerzaBruta(S1, S2);
+    auto end = chrono::high_resolution_clock::now();
 
-    // Mostrar el resultado
+    // Calcular duración en milisegundos
+    auto duration = chrono::duration_cast<chrono::milliseconds>(end - start).count();
+
+    // Mostrar resultados
     cout << "La distancia mínima de edición es: " << costoMinimo << endl;
-
+    cout << "Tiempo de ejecución: " << duration << " ms" << endl;
     return 0;
 }
